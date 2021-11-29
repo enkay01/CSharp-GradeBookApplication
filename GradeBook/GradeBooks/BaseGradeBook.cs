@@ -11,6 +11,7 @@ namespace GradeBook.GradeBooks
 {
     public class BaseGradeBook
     {
+        public GradeBookType type { get; set; }
         public string Name { get; set; }
         public List<Student> Students { get; set; }
 
@@ -73,7 +74,7 @@ namespace GradeBook.GradeBooks
                 Console.WriteLine("{0} : {1} : {2}", student.Name, student.Type, student.Enrollment);
             }
         }
-
+        
         public static BaseGradeBook Load(string name)
         {
             if (!File.Exists(name + ".gdbk"))
