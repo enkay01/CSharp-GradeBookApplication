@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using System.Linq;
 namespace GradeBook.GradeBooks
 {
     class RankedGradeBook:StandardGradeBook
@@ -15,25 +15,12 @@ namespace GradeBook.GradeBooks
             if (this.Students.Count < 20)
                 throw new InvalidOperationException();
 
-            List<double> gd = GetSortedGrades();
-            int[] quintiles = GetQuintiles(gd.Count);
 
-            if (averageGrade >= quintiles[0])
-            {
+            var threshold = (int)Math.Ceiling(Students.Count * 0.2);
+            var grades = Students.OrderByDescending(e => e.AverageGrade).Select(e => e.AverageGrade).ToList();
+
+            if (averageGrade >= grades[threshold - 1])
                 return 'A';
-            } 
-            else if(averageGrade >= quintiles[1] && averageGrade < quintiles[0])
-            {
-                return 'B';
-            }
-            else if (averageGrade >= quintiles[2] && averageGrade < quintiles[1])
-            {
-                return 'C';
-            }
-            else if (averageGrade >= quintiles[3] && averageGrade < quintiles[2])
-            {
-                return 'D';
-            }
 
             return 'F';
         }
