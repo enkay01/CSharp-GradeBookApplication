@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Linq;
+
 namespace GradeBook.GradeBooks
 {
     class RankedGradeBook:StandardGradeBook
@@ -15,12 +15,25 @@ namespace GradeBook.GradeBooks
             if (this.Students.Count < 20)
                 throw new InvalidOperationException();
 
+            List<double> gd = GetSortedGrades();
+            int[] quintiles = GetQuintiles(gd.Count);
 
-            var threshold = (int)Math.Ceiling(Students.Count * 0.2);
-            var grades = Students.OrderByDescending(e => e.AverageGrade).Select(e => e.AverageGrade).ToList();
-
-            if (averageGrade >= grades[threshold - 1])
+            if (averageGrade >= quintiles[0])
+            {
                 return 'A';
+            } 
+            else if(averageGrade >= quintiles[1] && averageGrade < quintiles[0])
+            {
+                return 'B';
+            }
+            else if (averageGrade >= quintiles[2] && averageGrade < quintiles[1])
+            {
+                return 'C';
+            }
+            else if (averageGrade >= quintiles[3] && averageGrade < quintiles[2])
+            {
+                return 'D';
+            }
 
             return 'F';
         }
@@ -42,6 +55,17 @@ namespace GradeBook.GradeBooks
             int [] quintiles = { (int)gradeA, (int)gradeB, (int)gradeC, (int)gradeD };
             return quintiles;
         }
-        
+        public override void CalculateStatistics()
+        {
+            if (this.Students.Count < 5)
+                throw new InvalidOperationException("Ranked grading requires at least 5 students with grades in order to properly calculate a student's overall grade.");
+            base.CalculateStatistics();
+        }
+        public override void CalculateStudentStatistics(string name)
+        {
+            if (this.Students.Count < 5)
+                throw new InvalidOperationException("Ranked grading requires at least 5 students with grades in order to properly calculate a student's overall grade.");
+            base.CalculateStudentStatistics(name);
+        }
     }
 }
